@@ -1,3 +1,7 @@
+/*
+    This method is called when a round of game is terminated (win/lose)
+    This method is called in function CGame(a)
+*/
 function CEndPanel(a) {
     var b, c, e, f, d, g;
     this._init = function(a) {
@@ -33,6 +37,10 @@ function CEndPanel(a) {
     this._initListener = function() {
         g.on("mousedown", this._onExit)
     };
+    /*
+        a is the score of this game
+        b is a boolean operator to determine which message to show
+    */
     this.show = function(a, b) {
         b ? (d.text = TEXT_CONGRATS, f.text = TEXT_CONGRATS) : (d.text = TEXT_GAMEOVER, f.text = TEXT_GAMEOVER);
         c.text = TEXT_SCORE + ": " + a;
@@ -54,6 +62,15 @@ function CEndPanel(a) {
     this._init(a);
     return this
 }
+/*
+    This method is 
+    This method is called in function CGame(a)
+    a is the x position of the ball
+    b is the y position of the ball
+    c is nothing
+    e,f is the SpriteSheets used to form the ball
+    d is the container of the ball
+*/
 function CBall(a, b, c, e, f, d) {
     var g, l, k, h;
     this._init = function(a, b, c, d, e, f) {
@@ -110,6 +127,10 @@ function CBall(a, b, c, e, f, d) {
     };
     this._init(a, b, c, e, f, d)
 }
+/*
+    This method is called in function CMain(a) to create variable s_oSpriteLibrary
+    This method creates a hash table for sprites which can be used to load, save and retrieve sprites
+*/
 function CSpriteLibrary() {
     var a, b, c, e, f, d;
     this.init = function(g, l, k) {
@@ -146,6 +167,7 @@ function CSpriteLibrary() {
         return b
     }
 }
+
 var CANVAS_WIDTH = 768,
 CANVAS_HEIGHT = 1024,
 FPS_TIME = 1E3 / 24,
@@ -170,6 +192,10 @@ CODE_EXPLODING_ISLE = 44,
 CODE_EXPLODING_BOMB = 66,
 CODE_BOMB_BALL = 11,
 CODE_RAINBOW_BALL = 12;
+
+/*
+    This method creates a vector with x and y coordinates
+*/
 function CVector2() {
     var a, b;
     this._init = function() {
@@ -258,6 +284,9 @@ function CVector2() {
     };
     this._init()
 }
+/*
+    This method is called in function CMenu() and function Interface(a)
+*/
 function CToggle(a, b, c) {
     var e, f, d;
     this._init = function(a, b, c) {
@@ -307,22 +336,38 @@ function CToggle(a, b, c) {
         e[ON_MOUSE_DOWN] && e[ON_MOUSE_DOWN].call(f[ON_MOUSE_DOWN])
     };
     this._init(a, b, c)
-} (function(a) { (jQuery.browser = jQuery.browser || {}).mobile = /android|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(ad|hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|tablet|treo|up\.(browser|link)|vodafone|wap|webos|windows (ce|phone)|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))
-   })(navigator.userAgent || navigator.vendor || window.opera);
+} (function(a) { 
+    (jQuery.browser = jQuery.browser || {}).mobile = /android|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(ad|hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|tablet|treo|up\.(browser|link)|vodafone|wap|webos|windows (ce|phone)|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))
+   })
+    (navigator.userAgent || navigator.vendor || window.opera);
+
 $(window).resize(function() {
-                 sizeHandler()
+                    sizeHandler()
                  });
+
+/*
+    This method is used for debugging purpose
+*/
 function trace(a) {
     console.log(a)
 }
+
 $(window).ready(function() {
-                sizeHandler()
+                    sizeHandler()
                 });
+
+/*
+    This method is used to update orientation
+*/
 window.addEventListener("orientationchange", onOrientationChange);
 function onOrientationChange() {
     window.matchMedia("(orientation: portrait)").matches && sizeHandler();
     window.matchMedia("(orientation: landscape)").matches && sizeHandler()
 }
+
+/*
+    This method is used to update the size of canvas according to the size of screen
+*/
 function sizeHandler() {
     window.scrollTo(0, 1);
     if ($("#canvas")) {
@@ -363,38 +408,38 @@ function NoClickDelay(a) {
     window.Touch && this.element.addEventListener("touchstart", this, !1)
 }
 NoClickDelay.prototype = {
-handleEvent: function(a) {
-    switch (a.type) {
-        case "touchstart":
-            this.onTouchStart(a);
-            break;
-        case "touchmove":
-            this.onTouchMove(a);
-            break;
-        case "touchend":
-            this.onTouchEnd(a)
+    handleEvent: function(a) {
+        switch (a.type) {
+            case "touchstart":
+                this.onTouchStart(a);
+                break;
+            case "touchmove":
+                this.onTouchMove(a);
+                break;
+            case "touchend":
+                this.onTouchEnd(a)
+        }
+    },
+    onTouchStart: function(a) {
+        a.preventDefault();
+        this.moved = !1;
+        this.element.addEventListener("touchmove", this, !1);
+        this.element.addEventListener("touchend", this, !1)
+    },
+    onTouchMove: function(a) {
+        this.moved = !0
+    },
+    onTouchEnd: function(a) {
+        this.element.removeEventListener("touchmove", this, !1);
+        this.element.removeEventListener("touchend", this, !1);
+        if (!this.moved) {
+            a = document.elementFromPoint(a.changedTouches[0].clientX, a.changedTouches[0].clientY);
+            3 == a.nodeType && (a = a.parentNode);
+            var b = document.createEvent("MouseEvents");
+            b.initEvent("click", !0, !0);
+            a.dispatchEvent(b)
+        }
     }
-},
-onTouchStart: function(a) {
-    a.preventDefault();
-    this.moved = !1;
-    this.element.addEventListener("touchmove", this, !1);
-    this.element.addEventListener("touchend", this, !1)
-},
-onTouchMove: function(a) {
-    this.moved = !0
-},
-onTouchEnd: function(a) {
-    this.element.removeEventListener("touchmove", this, !1);
-    this.element.removeEventListener("touchend", this, !1);
-    if (!this.moved) {
-        a = document.elementFromPoint(a.changedTouches[0].clientX, a.changedTouches[0].clientY);
-        3 == a.nodeType && (a = a.parentNode);
-        var b = document.createEvent("MouseEvents");
-        b.initEvent("click", !0, !0);
-        a.dispatchEvent(b)
-    }
-}
 };
 function CTextButton(a, b, c, e, f, d, g) {
     var l, k, h;
@@ -532,8 +577,10 @@ function CMenu() {
         var f = s_oSpriteLibrary.getSprite("but_play");
         b = new CTextButton(CANVAS_WIDTH / 2, CANVAS_HEIGHT - 100, f, TEXT_PLAY, "comic_sans_msregular", "#ffffff", 44);
         b.addEventListener(ON_MOUSE_UP, this._onButPlayRelease, this);
-        if (!1 === DISABLE_SOUND_MOBILE || !1 === s_bMobile) c = new CToggle(CANVAS_WIDTH - 60, 60, s_oSpriteLibrary.getSprite("audio_icon")),
+        if (!1 === DISABLE_SOUND_MOBILE || !1 === s_bMobile) {
+            c = new CToggle(CANVAS_WIDTH - 60, 60, s_oSpriteLibrary.getSprite("audio_icon")),
             c.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);
+        }
         e = new createjs.Shape;
         e.graphics.beginFill("black").drawRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         s_oStage.addChild(e);
@@ -561,9 +608,15 @@ function CMenu() {
     };
     this._init()
 }
+/*
+    This method converts degree to radian
+*/
 function toRadian(a) {
     return Math.PI / 180 * a
 }
+/*
+    This method converts radian to degree
+*/
 function toDegree(a) {
     return 180 / Math.PI * a
 }
@@ -585,12 +638,21 @@ function reflectVectorV2(a, b) {
     c.set(a.getX() - 2 * e * b.getX(), a.getY() - 2 * e * b.getY());
     return c
 }
+/*
+    This method calculates the dot product of two vectors
+*/
 function dotProductV2(a, b) {
     return a.getX() * b.getX() + a.getY() * b.getY()
 }
+/*
+    This method checks whether a point a falls in area b
+*/
 function pointInRect(a, b) {
     return a.getX() > b.x && a.getX() < b.x + b.width && a.getY() > b.y && a.getY() < b.y + b.height
 }
+/*
+    This method calculates the distance between two points
+*/
 function distance2(a, b) {
     return (b.getX() - a.getX()) * (b.getX() - a.getX()) + (b.getY() - a.getY()) * (b.getY() - a.getY())
 }
@@ -1072,10 +1134,14 @@ function CGame(a) {
         };
         b = new createjs.SpriteSheet(b);
         O = new createjs.Container;
-        for (var c = 0; c < BOARD_ROWS; c++) for (var d = 0; d < BOARD_COLS; d++) if (! (c & 1 && d === BOARD_COLS - 1)) {
-            m[c][d] = 1;
-            var e = new CBall(q[c][d].x, q[c][d].y, 1, a, b, O);
-            t[c][d] = e
+        for (var c = 0; c < BOARD_ROWS; c++) {
+            for (var d = 0; d < BOARD_COLS; d++) {
+                if (! (c & 1 && d === BOARD_COLS - 1)) {
+                    m[c][d] = 1;
+                    var e = new CBall(q[c][d].x, q[c][d].y, 1, a, b, O);
+                    t[c][d] = e
+                }
+            }
         }
         s_oStage.addChild(O)
     };

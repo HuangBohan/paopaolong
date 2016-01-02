@@ -64,7 +64,6 @@ function CEndPanel(a) {
 }
 
 /*
-    This method is 
     This method is called in function CGame(a)
     a is the x position of the ball
     b is the y position of the ball
@@ -387,7 +386,7 @@ function sizeHandler() {
 }
 
 /*
-    These methods are not used in anywhere yet
+    TBU
 */
 function randomFloatBetween(a, b, c) {
     "undefined" === typeof c && (c = 2);
@@ -448,6 +447,19 @@ NoClickDelay.prototype = {
         }
     }
 };
+
+/*
+    This method is called in function CMenu()
+    a,b is the width and height of the button
+    c is the container sprite ('but_play' in function CMenu())
+    e is the text on the button
+    f is the font of the text
+    d is the color of the button
+    g is the a size parameter
+*/
+
+CANVAS_WIDTH / 2, CANVAS_HEIGHT - 100, f, TEXT_PLAY, "comic_sans_msregular", "#ffffff", 44);
+
 function CTextButton(a, b, c, e, f, d, g) {
     var l, k, h;
     this._init = function(a, b, c, d, e, g, f) {
@@ -524,6 +536,11 @@ function CTextButton(a, b, c, e, f, d, g) {
     this._init(a, b, c, e, f, d, g);
     return this
 }
+
+/*
+    This method is called in function CMain(a)
+    This method creates text "" on stage whenever an image is loaded
+*/
 function CPreloader() {
     var a;
     this._init = function() {
@@ -544,6 +561,11 @@ function CPreloader() {
     };
     this._init()
 }
+
+/*
+    This method is called in function CInterface(a)
+    This method shows level info and score info 
+*/
 function CNextLevelPanel(a, b) {
     var c;
     this._init = function(a, b) {
@@ -576,6 +598,11 @@ function CNextLevelPanel(a, b) {
     };
     this._init(a, b)
 }
+
+/*
+    This method is called in function CMain(a)
+    This method creates a menu
+*/
 function CMenu() {
     var a, b, c, e;
     this._init = function() {
@@ -700,7 +727,8 @@ function CMain(a) {
         createjs.Ticker.setFPS(30);
         createjs.Ticker.addEventListener("tick", this._update);
         s_oSpriteLibrary = new CSpriteLibrary;
-        d = new CPreloader; ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || this._initSounds();
+        d = new CPreloader; 
+        ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || this._initSounds();
         this._loadImages()
     };
     this._initSounds = function() {

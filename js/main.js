@@ -288,6 +288,7 @@ function CVector2() {
 
 /*
     This method is called in function CMenu() and function Interface(a)
+    TBU
 */
 function CToggle(a, b, c) {
     var e, f, d;
@@ -457,9 +458,6 @@ NoClickDelay.prototype = {
     d is the color of the button
     g is the a size parameter
 */
-
-CANVAS_WIDTH / 2, CANVAS_HEIGHT - 100, f, TEXT_PLAY, "comic_sans_msregular", "#ffffff", 44);
-
 function CTextButton(a, b, c, e, f, d, g) {
     var l, k, h;
     this._init = function(a, b, c, d, e, g, f) {

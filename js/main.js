@@ -62,6 +62,7 @@ function CEndPanel(a) {
     this._init(a);
     return this
 }
+
 /*
     This method is 
     This method is called in function CGame(a)
@@ -127,6 +128,7 @@ function CBall(a, b, c, e, f, d) {
     };
     this._init(a, b, c, e, f, d)
 }
+
 /*
     This method is called in function CMain(a) to create variable s_oSpriteLibrary
     This method creates a hash table for sprites which can be used to load, save and retrieve sprites
@@ -284,6 +286,7 @@ function CVector2() {
     };
     this._init()
 }
+
 /*
     This method is called in function CMenu() and function Interface(a)
 */
@@ -357,7 +360,7 @@ $(window).ready(function() {
                 });
 
 /*
-    This method is used to update orientation
+    This method updates orientation
 */
 window.addEventListener("orientationchange", onOrientationChange);
 function onOrientationChange() {
@@ -366,7 +369,7 @@ function onOrientationChange() {
 }
 
 /*
-    This method is used to update the size of canvas according to the size of screen
+    This method updates the size of canvas according to the size of screen
 */
 function sizeHandler() {
     window.scrollTo(0, 1);
@@ -382,6 +385,10 @@ function sizeHandler() {
         $("#canvas").css("left", c / 2 - a / 2 + "px")
     }
 }
+
+/*
+    These methods are not used in anywhere yet
+*/
 function randomFloatBetween(a, b, c) {
     "undefined" === typeof c && (c = 2);
     return parseFloat(Math.min(a + Math.random() * (b - a), b).toFixed(c))
@@ -608,54 +615,76 @@ function CMenu() {
     };
     this._init()
 }
+
 /*
     This method converts degree to radian
 */
 function toRadian(a) {
     return Math.PI / 180 * a
 }
+
 /*
     This method converts radian to degree
 */
 function toDegree(a) {
     return 180 / Math.PI * a
 }
+
+/*
+    This method returns a random ranges between a and b
+*/
 function randRange(a, b) {
     return Math.floor(Math.random() * (b - a + 1)) + a
 }
+
+/*
+    This method calculates the angle between two vectors
+*/
 function angleBetweenVectors(a, b) {
     var c = Math.acos(dotProductV2(a, b) / (a.length() * b.length()));
     return ! 0 === isNaN(c) ? 0 : c
 }
+
+/*
+    This method rotate vector b by a
+*/
 function rotateVector2D(a, b) {
     var c = b.getX() * Math.cos(a) + b.getY() * Math.sin(a),
     e = b.getX() * -Math.sin(a) + b.getY() * Math.cos(a);
     b.set(c, e)
 }
+
+/*
+    This method returns vector c which is the reflection of vector a to vector b
+*/
 function reflectVectorV2(a, b) {
     var c = new CVector2,
     e = dotProductV2(a, b);
     c.set(a.getX() - 2 * e * b.getX(), a.getY() - 2 * e * b.getY());
     return c
 }
+
 /*
     This method calculates the dot product of two vectors
 */
 function dotProductV2(a, b) {
     return a.getX() * b.getX() + a.getY() * b.getY()
 }
+
 /*
     This method checks whether a point a falls in area b
 */
 function pointInRect(a, b) {
     return a.getX() > b.x && a.getX() < b.x + b.width && a.getY() > b.y && a.getY() < b.y + b.height
 }
+
 /*
     This method calculates the distance between two points
 */
 function distance2(a, b) {
     return (b.getX() - a.getX()) * (b.getX() - a.getX()) + (b.getY() - a.getY()) * (b.getY() - a.getY())
 }
+
 function CMain(a) {
     var b = 0,
     c = 0,

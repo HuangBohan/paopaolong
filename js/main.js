@@ -594,27 +594,42 @@ function pointInRect(a, b) {
 function distance2(a, b) {
     return (b.getX() - a.getX()) * (b.getX() - a.getX()) + (b.getY() - a.getY()) * (b.getY() - a.getY())
 }
+
+//main
 function CMain(a) {
+    // a详见html, b,c are counters, e is state, f is a, d is preloader, g is game
     var b = 0,
     c = 0,
     e = STATE_LOADING,
     f, d, g;
+    
+    // initialize container
     this.initContainer = function() {
         var a = document.getElementById("canvas");
         s_oStage = new createjs.Stage(a);
         a = window.hasOwnProperty("ontouchstart");
+        // check the environment, and enable touch if window does not have ontouchstart property
         navigator.userAgent.match(/Trident/) && !a || createjs.Touch.enable(s_oStage);
-        s_bMobile = jQuery.browser.mobile; ! 1 === s_bMobile && s_oStage.enableMouseOver(20);
+        s_bMobile = jQuery.browser.mobile;
+        // enable mouse over on non-mobile device
+        ! 1 === s_bMobile && s_oStage.enableMouseOver(20);
         s_iPrevTime = (new Date).getTime();
+        // set ticker
         createjs.Ticker.setFPS(30);
         createjs.Ticker.addEventListener("tick", this._update);
         s_oSpriteLibrary = new CSpriteLibrary;
-        d = new CPreloader; ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || this._initSounds();
+        d = new CPreloader;
+        // unless mobile disabled sound, init sounds
+        ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || this._initSounds();
         this._loadImages()
     };
+    
+    // initialize sounds (if the broser is opera load ogg files, otherwise load mp3 files. Every time a sound is loaded, call handleFileLoad method)
     this._initSounds = function() {
         createjs.Sound.initializeDefaultPlugins() && (0 < navigator.userAgent.indexOf("Opera") || 0 < navigator.userAgent.indexOf("OPR") ? (createjs.Sound.alternateExtensions = ["mp3"], createjs.Sound.addEventListener("fileload", createjs.proxy(this.handleFileLoad, this)), createjs.Sound.registerSound("./sounds/explosion.ogg", "explosion"), createjs.Sound.registerSound("./sounds/soundtrack.ogg", "soundtrack"), createjs.Sound.registerSound("./sounds/game_over.ogg", "game_over"), createjs.Sound.registerSound("./sounds/launch.ogg", "launch"), createjs.Sound.registerSound("./sounds/win.ogg", "win")) : (createjs.Sound.alternateExtensions = ["ogg"], createjs.Sound.addEventListener("fileload", createjs.proxy(this.handleFileLoad, this)), createjs.Sound.registerSound("./sounds/explosion.mp3", "explosion"), createjs.Sound.registerSound("./sounds/soundtrack.mp3", "soundtrack"), createjs.Sound.registerSound("./sounds/game_over.mp3", "game_over"), createjs.Sound.registerSound("./sounds/launch.mp3", "launch"), createjs.Sound.registerSound("./sounds/win.mp3", "win")), c += 5)
     };
+    
+    // after all sounds are loaded, unload the preloader and play the soundtrack
     this.handleFileLoad = function() {
         b++;
         if (b === c) {
@@ -627,6 +642,8 @@ function CMain(a) {
             this.gotoMenu()
         }
     };
+    
+    // initialize images
     this._loadImages = function() {
         s_oSpriteLibrary.init(this._onImagesLoaded, this._onAllImagesLoaded, this);
         s_oSpriteLibrary.addSprite("but_play", "./sprites/but_play.png");
@@ -641,11 +658,15 @@ function CMain(a) {
         s_oSpriteLibrary.addSprite("audio_icon", "./sprites/audio_icon.png");
         s_oSpriteLibrary.addSprite("hit_area", "./sprites/hit_area.png");
         c += s_oSpriteLibrary.getNumSprites();
+        // load images
         s_oSpriteLibrary.loadSprites()
     };
+    
+    // called when an image is loaded into sprite library 额image这附近有点诡异……不确定有没有读错
     this._onImagesLoaded = function() {
         b++;
         d.refreshLoader(Math.floor(b / c * 100));
+        // after all images are loaded into library, unload the preloader and play the soundtrack
         if (b === c) {
             d.unload();
             if (!1 === DISABLE_SOUND_MOBILE || !1 === s_bMobile) s_oSoundTrackSnd = createjs.Sound.play("soundtrack", {
@@ -660,26 +681,33 @@ function CMain(a) {
     this.onAllPreloaderImagesLoaded = function() {
         this._loadImages()
     };
+    
     this.gotoMenu = function() {
         new CMenu;
-        e = STATE_MENU
+        e = STATE_MENU;
     };
+    
     this.gotoGame = function() {
         g = new CGame(f);
         e = STATE_GAME;
-        $(s_oMain).trigger("game_start")
+        $(s_oMain).trigger("game_start");
     };
+    
     this.gotoHelp = function() {
         new CHelp;
-        e = STATE_HELP
+        e = STATE_HELP;
     };
+    
+    // called at every tick
     this._update = function(a) {
         var b = (new Date).getTime();
         s_iTimeElaps = b - s_iPrevTime;
         s_iCntTime += s_iTimeElaps;
         s_iCntFps++;
         s_iPrevTime = b;
+        // if accumulate time exceeds 1E3, clear time and Fps
         1E3 <= s_iCntTime && (s_iCurFps = s_iCntFps, s_iCntTime -= 1E3, s_iCntFps = 0);
+        // if is in game state, update game
         e === STATE_GAME && g.update();
         s_oStage.update(a)
     };
@@ -687,6 +715,8 @@ function CMain(a) {
     f = a;
     this.initContainer()
 }
+
+// initialize some vars
 var s_iCntTime = 0,
 s_iTimeElaps = 0,
 s_iPrevTime = 0,
@@ -706,60 +736,72 @@ TEXT_VERYGOOD = "VERY GOOD!";
 TEXT_GOOD = "GOOD!";
 TEXT_COMPLETED = "COMPLETED";
 TEXT_HELP = "DESTROY ALL THE COLORED \n BUBBLES FROM THE LEVEL,\n LAUNCHING A BUBBLE ON \n GROUPS OF THE SAME \nCOLOR.";
+
 function CInterface(a) {
     var b, c, e, f, d, g, l, k, h, n, s, E;
     this._init = function(a) {
+        // p is the interface
         var p = this,
         C = new createjs.Shape;
+        // 头顶那个半透明的黑条
         C.graphics.beginFill("rgba(0,0,0,0.5)").drawRect(0, 0, CANVAS_WIDTH, 110);
         s_oStage.addChild(C);
+        // score text的黑影子
         g = new createjs.Text(TEXT_SCORE + ": 0", "bold 40px comic_sans_msregular", "#000000");
         g.x = CANVAS_WIDTH / 2 + 2;
         g.y = CANVAS_HEIGHT - 14;
         g.textAlign = "center";
         g.textBaseline = "alphabetic";
         s_oStage.addChild(g);
+        // score text的白字
         l = new createjs.Text(TEXT_SCORE + ": 0", "bold 40px comic_sans_msregular", "#ffffff");
         l.x = CANVAS_WIDTH / 2;
         l.y = CANVAS_HEIGHT - 16;
         l.textAlign = "center";
         l.textBaseline = "alphabetic";
         s_oStage.addChild(l);
+        // next text的黑影子
         d = new createjs.Text(TEXT_NEXT, "bold 34px comic_sans_msregular", "#000000");
         d.x = CANVAS_WIDTH / 2 - 31;
         d.y = 94;
         d.textAlign = "center";
         d.textBaseline = "alphabetic";
         s_oStage.addChild(d);
+        // next text的白字
         f = new createjs.Text(TEXT_NEXT, "bold 34px comic_sans_msregular", "#ffffff");
         f.x = CANVAS_WIDTH / 2 - 30;
         f.y = 92;
         f.textAlign = "center";
         f.textBaseline = "alphabetic";
         s_oStage.addChild(f);
+        // sprite sheet, ball_0 is the animation to play(在后面)
         e = new createjs.Sprite(a, "ball_0");
         e.stop();
         e.x = CANVAS_WIDTH / 2 + 26;
         e.y = 56;
         s_oStage.addChild(e);
+        // level text黑影
         h = new createjs.Text(TEXT_LEVEL + " 1", "bold 34px comic_sans_msregular", "#000000");
         h.x = CANVAS_WIDTH / 2 + 1;
         h.y = 40;
         h.textAlign = "center";
         h.textBaseline = "alphabetic";
         s_oStage.addChild(h);
+        // level text白字
         k = new createjs.Text(TEXT_LEVEL + " 1", "bold 34px comic_sans_msregular", "#ffffff");
         k.x = CANVAS_WIDTH / 2;
         k.y = 38;
         k.textAlign = "center";
         k.textBaseline = "alphabetic";
         s_oStage.addChild(k);
+        // very good text黑影
         s = new createjs.Text(TEXT_VERYGOOD, "bold 60px comic_sans_msregular", "#000000");
         s.x = CANVAS_WIDTH / 2 + 4;
         s.y = -76;
         s.textAlign = "center";
         s.textBaseline = "alphabetic";
         s_oStage.addChild(s);
+        // very good text白字
         n = new createjs.Text(TEXT_VERYGOOD, "bold 60px comic_sans_msregular", "#ffffff");
         n.x = CANVAS_WIDTH / 2;
         n.y = -80;
@@ -767,23 +809,31 @@ function CInterface(a) {
         n.textBaseline = "alphabetic";
         s_oStage.addChild(n);
         p = this;
+        // hit area
         c = new createjs.Bitmap(s_oSpriteLibrary.getSprite("hit_area"));
         s_oStage.addChild(c);
+        // once some place is clicked, call onTapScreen
         c.on("pressup",
              function(a) {
              p._onTapScreen(a.stageX, a.stageY)
              });
+        // exit button
         a = s_oSpriteLibrary.getSprite("but_exit");
         b = new CGfxButton(CANVAS_WIDTH - a.width / 2 - 20, 60, a, !0);
+        // set mouse up event for the exit button
         b.addEventListener(ON_MOUSE_UP, this._onExit, this);
+        // audio toggle button
         if (!1 === DISABLE_SOUND_MOBILE || !1 === s_bMobile) E = new CToggle(a.width / 2 + 20, 60, s_oSpriteLibrary.getSprite("audio_icon")),
             E.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this)
             };
+    
+    // unload all the things on interface
     this.unload = function() {
         b.unload();
         b = null;
         s_oStage.removeChild(l);
         s_oStage.removeChild(g);
+        // unload audio toggle
         if (!1 === DISABLE_SOUND_MOBILE || !1 === s_bMobile) E.unload(),
             E = null;
         var a = this;
@@ -793,16 +843,23 @@ function CInterface(a) {
               });
         s_oStage.removeChild(c)
     };
+    
+    // refresh score text
     this.refreshScore = function(a) {
         g.text = TEXT_SCORE + ": " + a;
         l.text = TEXT_SCORE + ": " + a
     };
+    
+    // refresh new next ball
     this.setNextBall = function(a) {
         e.gotoAndStop("ball_" + a)
     };
+    
     this.showCongrats = function(a) {
+        // n是very good白字，s是黑影
         n.text = a;
         s.text = a;
+        // jump out! then jump back
         createjs.Tween.get(n).to({
                                  y: CANVAS_HEIGHT / 2
                                  },
@@ -812,6 +869,7 @@ function CInterface(a) {
                                                                                             },
                                                                                             700, createjs.Ease.quintIn)
                                                                    });
+        // jump out! then jump back
         createjs.Tween.get(s).to({
                                  y: CANVAS_HEIGHT / 2
                                  },
@@ -842,6 +900,8 @@ function CInterface(a) {
     this._init(a);
     return this
 }
+
+// help panel, a is help panel background image
 function CHelpPanel(a) {
     var b, c, e, f;
     this._init = function(a) {
@@ -877,6 +937,8 @@ function CHelpPanel(a) {
     };
     this._init(a)
 }
+
+// CGfxButton, a and b are offsets, c is button image
 function CGfxButton(a, b, c) {
     var e, f, d;
     this._init = function(a, b, c) {
@@ -938,6 +1000,8 @@ function CGfxButton(a, b, c) {
     this._init(a, b, c);
     return this
 }
+
+//还没开始！
 function CGame(a) {
     var b = !1,
     c, e, f, d, g, l, k, h, n, s, E, w, p, C, P, u, A, x, J, G, K, y, D, q, I = [],

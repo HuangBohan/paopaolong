@@ -1117,7 +1117,7 @@ function CGfxButton(a, b, c) {
     return this
 }
 
-//还没开始！
+// game logic
 function CGame(a) {
     var b = !1,
     c, e, f, d, g, l, k, h, n, s, E, w, p, C, P, u, A, x, J, G, K, y, D, q, I = [],
@@ -1134,11 +1134,16 @@ function CGame(a) {
     Q,
     v,
     H;
+    
     this._init = function() {
+        // game background image
         Q = new createjs.Bitmap(s_oSpriteLibrary.getSprite("bg_game"));
         s_oStage.addChild(Q);
+        // balls image
         var a = s_oSpriteLibrary.getSprite("balls");
+        // w is the width of every ball img
         w = Math.floor(a.width / NUM_BALL_COLORS);
+        // spritesheet for balls of different colors
         L = new createjs.SpriteSheet({
                                      images: [a],
                                      frames: {
@@ -1162,15 +1167,18 @@ function CGame(a) {
                                      });
         this._initLevel(a);
         v = new CInterface(L);
+        //谜一样的G
         v.setNextBall(G - 1);
         new CHelpPanel(s_oSpriteLibrary.getSprite("bg_help"))
     };
+    
     this.unload = function() {
         b = !1;
         v.unload();
         H && H.unload();
         s_oStage.removeAllChildren()
     };
+    
     this._initLevel = function(a) {
         k = l = 0;
         p = w / 2;
@@ -1184,6 +1192,7 @@ function CGame(a) {
         P = w * BOARD_COLS + BOARD_OFFSET_X;
         var d, e;
         q = [];
+        // push coordinates of balls from a single row to f, push arrays of coordinates of balls from every row  to q (我语死早了自行感受一下)
         for (var h = 0; h < BOARD_ROWS; h++) {
             for (var f = [], g = 0; g < BOARD_COLS; g++) d = BOARD_OFFSET_Y + h * b,
                 e = BOARD_OFFSET_X + g * w,
@@ -1195,18 +1204,21 @@ function CGame(a) {
             q.push(f)
         }
         OFFSET_Y_GAME_OVER = d;
+        // set position of the ball to be shot
         d = BOARD_OFFSET_Y + (BOARD_ROWS + 1) * b;
         B.set(CANVAS_WIDTH / 2, d);
         r = new createjs.Sprite(L, "ball_0");
         r.stop();
         r.x = B.getX();
         r.y = B.getY();
+        // set center of the ball
         r.regX = Math.floor(a.width / NUM_BALL_COLORS / 2);
         r.regY = a.height / 2;
         s_oStage.addChild(r);
         this._createMatBalls(L);
         this.resetLevel()
     };
+    
     this.resetLevel = function() {
         e = c = !1;
         h = 89;
@@ -1230,6 +1242,7 @@ function CGame(a) {
         v && v.refreshLevelText(k + 1);
         b = !0
     };
+    
     this._createMatBalls = function(a) {
         m = Array(BOARD_ROWS);
         t = Array(BOARD_ROWS);

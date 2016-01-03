@@ -1315,33 +1315,36 @@ function CGame(a) {
             }
         }
     };
-        
+    
     /*
      This method generates a random color ball according to the balls on the wall
      */
     this._chooseBall = function() {
         J = G;
         // push all existing colors on the wall to array a
-        for (var a = [], b = 0; b < BOARD_ROWS; b++) for (var c = 0; c < BOARD_COLS; c++) {
-            for (var d = !1, e = 0; e < a.length; e++) {
-                m[b][c] === a[e] && (d = !0);
+        for (var a = [], b = 0; b < BOARD_ROWS; b++)
+            for (var c = 0; c < BOARD_COLS; c++) {
+                for (var d = !1, e = 0; e < a.length; e++)
+                    m[b][c] === a[e] && (d = !0);
                 ! 1 === d && 1 !== m[b][c] && a.push(m[b][c])
             }
-        }
         // generates a random color from those that exist on the wall
-        for (b = 0; ; ) {
+        for (b = 0;;) {
             b = randRange(2, NUM_BALL_COLORS + 1);
             d = !1;
-            for (e = 0; e < a.length; e++) if (b === a[e]) {
-                d = !0;
+            for (e = 0; e < a.length; e++)
+                if (b === a[e]) {
+                    d = !0;
+                    break
+                }
+            if (!0 === d)
                 break
-            }
-            if (!0 === d) break
         }
         G = b;
         // set next ball
         v && v.setNextBall(G - 1)
     };
+    
     this._gameOver = function() {
         b = !1; 
         ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || createjs.Sound.play("game_over");

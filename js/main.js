@@ -712,7 +712,7 @@ function distance2(a, b) {
 
 //main
 function CMain(a) {
-    // a详见html, b,c are counters, e is state, f is a, d is preloader, g is game
+    // a is the spreadsheet of game(详见html), b,c are counters, e is state, f is a, d is preloader, g is game
     var b = 0,
     c = 0,
     e = STATE_LOADING,
@@ -1219,6 +1219,9 @@ function CGame(a) {
         this.resetLevel()
     };
     
+    /*
+     This method is to reset a level.
+     */
     this.resetLevel = function() {
         e = c = !1;
         h = 89;
@@ -1243,6 +1246,9 @@ function CGame(a) {
         b = !0
     };
     
+    /*
+     This method is to create mat balls and add them into container O then store them in array t. Also, it stores all the valid positions in array m.
+     */
     this._createMatBalls = function(a) {
         m = Array(BOARD_ROWS);
         t = Array(BOARD_ROWS);
@@ -1250,6 +1256,7 @@ function CGame(a) {
             t[b] = Array(BOARD_COLS);
         M = new createjs.Container;
         s_oStage.addChild(M);
+        // sprite sheet for ball explosion
         b = {
         images: [s_oSpriteLibrary.getSprite("ball_explosion")],
         frames: {
@@ -1276,6 +1283,10 @@ function CGame(a) {
         }
         s_oStage.addChild(O)
     };
+    
+    /*
+     This method is to clear all the balls on the wall
+     */
     this._cleanWall = function() {
         for (; 0 < I.length;) {
             var a = I.pop();
@@ -1283,28 +1294,44 @@ function CGame(a) {
         }
         I = []
     };
+    
+    /*
+     This method is to load a level according to the levels information (K, see html). Save ball num into array m and update the ball inside array t.
+     */
     this._loadLevel = function() {
         var a;
         g = !1;
+        // a is the level information for a particular level
         a = K[k];
         for (var b = a.split("a"), c = 0; c < BOARD_ROWS; c++) for (var d = 0; d < BOARD_COLS; d++) void 0 !== t[c][d] && (a.charAt(c * BOARD_COLS + d), m[c][d] = Number(b[c * BOARD_COLS + d]), t[c][d].setInfo(Number(b[c * BOARD_COLS + d])))
             };
+    
+    /*
+     This method generates a random color ball according to the balls on the wall
+     */
     this._chooseBall = function() {
         J = G;
-        for (var a = [], b = 0; b < BOARD_ROWS; b++) for (var c = 0; c < BOARD_COLS; c++) {
-            for (var d = !1,
-                 e = 0; e < a.length; e++) m[b][c] === a[e] && (d = !0); ! 1 === d && 1 !== m[b][c] && a.push(m[b][c])
+        // push all existing colors on the wall to array a
+        for (var a = [], b = 0; b < BOARD_ROWS; b++)
+            for (var c = 0; c < BOARD_COLS; c++) {
+                for (var d = !1, e = 0; e < a.length; e++)
+                    m[b][c] === a[e] && (d = !0);
+                ! 1 === d && 1 !== m[b][c] && a.push(m[b][c])
         }
+        // generates a random color from those that exist on the wall
         for (b = 0;;) {
             b = randRange(2, NUM_BALL_COLORS + 1);
             d = !1;
-            for (e = 0; e < a.length; e++) if (b === a[e]) {
-                d = !0;
-                break
-            }
-            if (!0 === d) break
+            for (e = 0; e < a.length; e++)
+                if (b === a[e]) {
+                    d = !0;
+                    break
                 }
+            if (!0 === d)
+                break
+        }
         G = b;
+        // set next ball
         v && v.setNextBall(G - 1)
     };
     this._gameOver = function() {
@@ -1513,6 +1540,7 @@ function CGame(a) {
     NUM_LAUNCH_FOR_EARTHQUAKE = a.shot_for_ceiling;
     SCORE_EXPLOSION_BALL = a.score_explosion;
     SCORE_FALLEN_BALL = a.score_fall;
+    // K is the level information that is declared in html
     K = [];
     K = a.levels;
     NUM_LEVELS = K.length;

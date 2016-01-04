@@ -1345,46 +1345,77 @@ function CGame(a) {
         v && v.setNextBall(G - 1)
     };
     
+    /*
+     This method plays game over sound and pops game over msg box
+     */
     this._gameOver = function() {
         b = !1; 
         ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || createjs.Sound.play("game_over");
         H = CEndPanel(s_oSpriteLibrary.getSprite("msg_box"));
         H.show(l, !1)
     };
+    
+    /*
+     This method pops win msg box
+     */
     this._win = function() {
         b = !1;
         H = CEndPanel(s_oSpriteLibrary.getSprite("msg_box"));
         H.show(l, !0)
     };
+    
+    /*
+     This method calls unload method and go to game menu to restart the game
+     */
     this.onExit = function() {
         this.unload();
         s_oMain.gotoMenu();
         $(s_oMain).trigger("restart")
     };
+    
+    /*
+     
+     */
     this.onStartGame = function() {
         b = !0
     };
+    
+    /*
+     Called in CInterface's _onTapScreen. It calculates the shooting angle and play launch sound when screen is tapped
+     */
     this.tapScreen = function(a, b) {
         var c = new CVector2;
         c.set( - 1, 0);
+        // set d as the unit vector from shooting point to the position that user taps
         var d = new CVector2;
         d.set(a - B.getX(), b - B.getY());
         d.normalize();
+        // set n as the shooting angle （我又语死早了。。就是射击角度，和底边左半轴的夹角）
         n = angleBetweenVectors(c, d);
         h = toDegree(n);
+        // angle small than 5 will be taken as 5, larger than 175 will be taken as 175
         5 > h ? h = 5 : 175 < h && (h = 175);
         c.set( - 1, 0);
         n = toRadian(h);
+        // c is now the real shooting angle
         rotateVector2D(n, c);
         c.setY( - 1 * c.getY()); 
         ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || createjs.Sound.play("launch");
         g = !0
     };
+    
+    /*
+     This method verifies whether all balls are cleared(victory)
+     */
     this._verifyVictory = function() {
         for (var a = !0, b = 0; b < BOARD_ROWS; b++) {
             for (var c = 0; c < BOARD_COLS; c++) 1 < m[b][c] && m[b][c] < CODE_EXPLODING_BALL && (a = !1);
         return a
     };
+        
+    /*
+     This method verifies whether any ball has reached the bottom(game over)
+     */
     this._verifyGameOver = function() {
         for (var a = !1, b = 0; b < BOARD_ROWS; b++) {
             for (var c = 0; c < BOARD_COLS; c++) {
@@ -1396,6 +1427,10 @@ function CGame(a) {
         }
         return a
     };
+        
+    /*
+     
+     */
     this._removeBalls = function() {
         for (var a = 0, b = 0, c = !1; a < MAX_BALL_ADJACENCY; ) { 
             - 1 !== y[a] && b++;

@@ -1381,7 +1381,7 @@ function CGame(a) {
     };
     
     /*
-     Called in CInterface's _onTapScreen. It calculates the shooting angle and play launch sound when screen is tapped
+     Called in CInterface's _onTapScreen. It calculates the shooting angle and play launch sound when screen is tapped. a,b are the x,y coordinates
      */
     this.tapScreen = function(a, b) {
         var c = new CVector2;
@@ -1410,6 +1410,7 @@ function CGame(a) {
     this._verifyVictory = function() {
         for (var a = !0, b = 0; b < BOARD_ROWS; b++) {
             for (var c = 0; c < BOARD_COLS; c++) 1 < m[b][c] && m[b][c] < CODE_EXPLODING_BALL && (a = !1);
+        }
         return a
     };
         

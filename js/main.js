@@ -1117,7 +1117,21 @@ function CGfxButton(a, b, c) {
     return this
 }
 
-// game logic
+/*
+    This method is the main logic of the game
+    
+    For most of the time
+        Q is game background image
+        a is array of all existing colors on the wall
+        w is the width of every ball img
+        L is spritesheet for balls of different colors
+        b is spritesheet for ball explosion
+        m is an array of all the valid positions
+        O is container 
+        t is an array of mat balls
+        f is coordinates of balls from a single row
+        q is arrays of coordinates of balls from every row
+*/
 function CGame(a) {
     var b = !1,
     c, e, f, d, g, l, k, h, n, s, E, w, p, C, P, u, A, x, J, G, K, y, D, q, I = [],
@@ -1192,7 +1206,7 @@ function CGame(a) {
         P = w * BOARD_COLS + BOARD_OFFSET_X;
         var d, e;
         q = [];
-        // push coordinates of balls from a single row to f, push arrays of coordinates of balls from every row  to q (我语死早了自行感受一下)
+        // push coordinates of balls from a single row to f, push arrays of coordinates of balls from every row to q (我语死早了自行感受一下)
         for (var h = 0; h < BOARD_ROWS; h++) {
             for (var f = [], g = 0; g < BOARD_COLS; g++) d = BOARD_OFFSET_Y + h * b,
                 e = BOARD_OFFSET_X + g * w,
@@ -1220,8 +1234,8 @@ function CGame(a) {
     };
     
     /*
-     This method is to reset a level.
-     */
+        This method is to reset a level.
+    */
     this.resetLevel = function() {
         e = c = !1;
         h = 89;
@@ -1247,8 +1261,9 @@ function CGame(a) {
     };
     
     /*
-     This method is to create mat balls and add them into container O then store them in array t. Also, it stores all the valid positions in array m.
-     */
+        This method is to create mat balls and add them into container O then store them in array t. 
+        Also, it stores all the valid positions in array m.
+    */
     this._createMatBalls = function(a) {
         m = Array(BOARD_ROWS);
         t = Array(BOARD_ROWS);
@@ -1287,8 +1302,8 @@ function CGame(a) {
     };
     
     /*
-     This method is to clear all the balls on the wall
-     */
+        This method is to clear all the balls on the wall
+    */
     this._cleanWall = function() {
         for (; 0 < I.length;) {
             var a = I.pop();
@@ -1298,8 +1313,8 @@ function CGame(a) {
     };
     
     /*
-     This method is to load a level according to the levels information (K, see html). Save ball num into array m and update the ball inside array t.
-     */
+        This method is to load a level according to the levels information (K, see html). Save ball num into array m and update the ball inside array t.
+    */
     this._loadLevel = function() {
         var a;
         g = !1;
@@ -1317,8 +1332,8 @@ function CGame(a) {
     };
     
     /*
-     This method generates a random color ball according to the balls on the wall
-     */
+        This method generates a random color ball according to the balls on the wall
+    */
     this._chooseBall = function() {
         J = G;
         // push all existing colors on the wall to array a
@@ -1430,8 +1445,8 @@ function CGame(a) {
     };
         
     /*
-     
-     */
+        This method removes balls that are chained 
+    */
     this._removeBalls = function() {
         for (var a = 0, b = 0, c = !1; a < MAX_BALL_ADJACENCY; ) { 
             - 1 !== y[a] && b++;
@@ -1442,7 +1457,7 @@ function CGame(a) {
             a++
         }
         if (c) {
-            for (a = 0; a < MAX_BALL_ADJACENCY;) {
+            for (a = 0; a < MAX_BALL_ADJACENCY; ) {
                 - 1 !== y[a] && (m[y[a]][D[a]] = CODE_EXPLODING_BALL, t[y[a]][D[a]].destroy(), f = !0), a++;
             }
             for (a = 0; a < MAX_BALL_ADJACENCY; a++) {
@@ -1456,6 +1471,9 @@ function CGame(a) {
             }
         }
     };
+    /*
+        This method checks 
+    */
     this._checkIsland = function() {
         for (var a = 0, b = 0, c = Array(BOARD_ROWS), a = 0; a < BOARD_ROWS; a++) {
             for (c[a] = Array(BOARD_COLS), b = 0; b < BOARD_COLS; b++) {
@@ -1475,8 +1493,12 @@ function CGame(a) {
         }
     };
     this._recursiveIsland = function(a, b, c) {
+        //TBU WTH
         0 < c[a][b] || 1 === m[a][b] || m[a][b] === CODE_EXPLODING_BALL || (c[a][b] = 1, 0 === (a & 1) ? (b + 1 < BOARD_COLS && this._recursiveIsland(a, b + 1, c), -1 < b - 1 && this._recursiveIsland(a, b - 1, c), -1 < a - 1 && -1 < b - 1 && this._recursiveIsland(a - 1, b - 1, c), -1 < a - 1 && this._recursiveIsland(a - 1, b, c), a + 1 < BOARD_ROWS && -1 < b - 1 && this._recursiveIsland(a + 1, b - 1, c)) : (b + 1 < BOARD_COLS && this._recursiveIsland(a, b + 1, c), -1 < b - 1 && this._recursiveIsland(a, b - 1, c), -1 < a - 1 && b + 1 < BOARD_COLS && this._recursiveIsland(a - 1, b + 1, c), -1 < a - 1 && this._recursiveIsland(a - 1, b, c), a + 1 < BOARD_ROWS && b + 1 < BOARD_COLS && this._recursiveIsland(a + 1, b + 1, c)), a + 1 < BOARD_ROWS && this._recursiveIsland(a + 1, b, c))
     };
+    /*
+        This method checks if balls attached to each other share same color
+    */
     this._checkBallsWithSameColor = function(a, b, c) {
         for (var d = !1, e = 0; e < MAX_BALL_ADJACENCY; ) {
             if (y[e] === a && D[e] === b) {
@@ -1499,12 +1521,18 @@ function CGame(a) {
             ! 1 !== d && (0 === (a & 1) ? (b + 1 < BOARD_COLS && this._checkBallsWithSameColor(a, b + 1, c), -1 < b - 1 && this._checkBallsWithSameColor(a, b - 1, c), -1 < a - 1 && -1 < b - 1 && this._checkBallsWithSameColor(a - 1, b - 1, c), -1 < a - 1 && this._checkBallsWithSameColor(a - 1, b, c), a + 1 < BOARD_ROWS && -1 < b - 1 && this._checkBallsWithSameColor(a + 1, b - 1, c)) : (b + 1 < BOARD_COLS && this._checkBallsWithSameColor(a, b + 1, c), -1 < b - 1 && this._checkBallsWithSameColor(a, b - 1, c), -1 < a - 1 && b + 1 < BOARD_COLS && this._checkBallsWithSameColor(a - 1, b + 1, c), -1 < a - 1 && this._checkBallsWithSameColor(a - 1, b, c), a + 1 < BOARD_ROWS && b + 1 < BOARD_COLS && this._checkBallsWithSameColor(a + 1, b + 1, c)), a + 1 < BOARD_ROWS && this._checkBallsWithSameColor(a + 1, b, c))
         }
     };
+    /*
+        This method attachs the newly fired ball to the others
+    */
     this._attachBall = function(a, b) {
         m[a][b] = J;
         t[a][b].setColor(J);
         this._checkBallsWithSameColor(a, b, J);
         this._removeBalls()
     };
+    /*
+        This method check is ball is hooked
+    */
     this._checkIfBallHooked = function() {
         var a = new createjs.Rectangle,
         b = w * w,
@@ -1557,6 +1585,9 @@ function CGame(a) {
         }
         return ! 1
     };
+    /*
+        This method updates array t (array of mat balls) and array m (array of all the valid positions)
+    */
     this._removeExplodedBalls = function() {
         for (var a = 0, d = 0; d < BOARD_ROWS; d++) {
             for (var e = 0; e < BOARD_COLS; e++) {
@@ -1571,6 +1602,9 @@ function CGame(a) {
             k < NUM_LEVELS ? (!1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || createjs.Sound.play("win"), v.showNextLevel(k, l)) : this._win()
         }
     };
+    /*
+        This method sets earthquake on the wall
+    */
     this._setEarthquake = function(a) {
         for (var b = EARTHQUAKE_TIME - 50 * a, c = 0; c < BOARD_ROWS; c++) {
             for (var d = 0; d < BOARD_COLS; d++) {
@@ -1578,6 +1612,9 @@ function CGame(a) {
             }
         }
     };
+    /*
+        This method updates the position of the wall
+    */
     this._updateWallPosition = function() {
         for (var a = s_oSpriteLibrary.getSprite("wall_tile"), b = 0; b < BOARD_COLS; b++) {
             var c = new createjs.Bitmap(a);
@@ -1587,6 +1624,9 @@ function CGame(a) {
             I.push(c)
         }
     };
+    /*
+        TBU
+    */
     this._updateMatch = function() {
         if (!0 !== c) if (!1 === d) z.set( - 1, 0),
             rotateVector2D(n, z),
@@ -1601,6 +1641,9 @@ function CGame(a) {
             for (b = 0; b < a && !0 !== this._updatePhysics(); b++);
         }
     };
+    /*
+        TBU
+    */
     this._updatePhysics = function() {
         F.add(z);
         r.x = F.getX();
@@ -1609,6 +1652,9 @@ function CGame(a) {
             z = reflectVectorV2(z, N);
         return this._checkIfBallHooked() ? (d = !1, r.x = B.getX(), r.y = B.getY(), r.gotoAndStop("ball_" + (G - 1)), A++, A < NUM_LAUNCH_FOR_EARTHQUAKE && (A === NUM_LAUNCH_FOR_EARTHQUAKE - 2 ? this._setEarthquake(1) : A === NUM_LAUNCH_FOR_EARTHQUAKE - 1 ? this._setEarthquake(2) : this._setEarthquake(0)), A === NUM_LAUNCH_FOR_EARTHQUAKE && (u += x, A = 0, this._setEarthquake(0), this._updateWallPosition(), this._updateMatPosition()), !1 === this._verifyVictory() && (e = this._verifyGameOver(), !0 === e ? this._gameOver() : this._chooseBall()), !0) : !1
     };
+    /*
+        This method updates the position of the mat balls
+    */
     this._updateMatPosition = function() {
         for (var a = 0; a < BOARD_ROWS; a++) {
             for (var b = 0; b < BOARD_COLS; b++) {
@@ -1616,6 +1662,9 @@ function CGame(a) {
             }
         }
     };
+    /*
+        This method is the main update method calling all the helper methods
+    */
     this.update = function() { 
         ! 1 !== b && 
         (!1 === f ? this._updateMatch() : 50 > C ? C += s_iTimeElaps: (C = 0, f = !1, this._removeExplodedBalls()))

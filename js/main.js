@@ -1131,7 +1131,9 @@ function CGfxButton(a, b, c) {
         t is an array of mat balls
         f is coordinates of balls from a single row
         q is arrays of coordinates of balls from every row
-        y and D are arrays initailised to be -1; y is x coordinate of sth and D is y coordinate of sth; TBU
+        (这两个我不太确定啊 太迷了)
+        y is the array of x coordinates of balls (y[1] is the x coordinates of the 1st ball; initialised to -1 if the ball is removed)
+        D is the array of y coordinates of balls (similar to y)
 */
 function CGame(a) {
     var b = !1,
@@ -1534,7 +1536,7 @@ function CGame(a) {
         this._removeBalls()
     };
     /*
-        This method check is ball is hooked
+        This method check if ball is hooked
     */
     this._checkIfBallHooked = function() {
         var a = new createjs.Rectangle,

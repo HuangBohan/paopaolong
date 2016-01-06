@@ -1126,11 +1126,12 @@ function CGfxButton(a, b, c) {
         w is the width of every ball img
         L is spritesheet for balls of different colors
         b is spritesheet for ball explosion
-        m is an array of all the valid positions
+        m is an array of all the valid positions / array of the number of balls of every level
         O is container 
         t is an array of mat balls
         f is coordinates of balls from a single row
         q is arrays of coordinates of balls from every row
+        y and D are arrays initailised to be -1; y is x coordinate of sth and D is y coordinate of sth; TBU
 */
 function CGame(a) {
     var b = !1,
@@ -1249,7 +1250,9 @@ function CGame(a) {
         x = s_oSpriteLibrary.getSprite("wall_tile").height;
         y = Array(MAX_BALL_ADJACENCY);
         D = Array(MAX_BALL_ADJACENCY);
-        for (var a = 0; a < MAX_BALL_ADJACENCY; a++) y[a] = D[a] = -1;
+        for (var a = 0; a < MAX_BALL_ADJACENCY; a++) {
+            y[a] = D[a] = -1;
+        }
         this._cleanWall();
         this._loadLevel();
         this._chooseBall();
@@ -1497,7 +1500,7 @@ function CGame(a) {
         0 < c[a][b] || 1 === m[a][b] || m[a][b] === CODE_EXPLODING_BALL || (c[a][b] = 1, 0 === (a & 1) ? (b + 1 < BOARD_COLS && this._recursiveIsland(a, b + 1, c), -1 < b - 1 && this._recursiveIsland(a, b - 1, c), -1 < a - 1 && -1 < b - 1 && this._recursiveIsland(a - 1, b - 1, c), -1 < a - 1 && this._recursiveIsland(a - 1, b, c), a + 1 < BOARD_ROWS && -1 < b - 1 && this._recursiveIsland(a + 1, b - 1, c)) : (b + 1 < BOARD_COLS && this._recursiveIsland(a, b + 1, c), -1 < b - 1 && this._recursiveIsland(a, b - 1, c), -1 < a - 1 && b + 1 < BOARD_COLS && this._recursiveIsland(a - 1, b + 1, c), -1 < a - 1 && this._recursiveIsland(a - 1, b, c), a + 1 < BOARD_ROWS && b + 1 < BOARD_COLS && this._recursiveIsland(a + 1, b + 1, c)), a + 1 < BOARD_ROWS && this._recursiveIsland(a + 1, b, c))
     };
     /*
-        This method checks if balls attached to each other share same color
+        This method checks if balls at position (a,b) is of color c
     */
     this._checkBallsWithSameColor = function(a, b, c) {
         for (var d = !1, e = 0; e < MAX_BALL_ADJACENCY; ) {
@@ -1510,7 +1513,7 @@ function CGame(a) {
         if (!d && m[a][b] === c) {
             e = 0;
             for (d = !1; e < MAX_BALL_ADJACENCY;) {
-                if ( - 1 === y[e]) {
+                if ( - 1 === y[e] ) {
                     y[e] = a;
                     D[e] = b;
                     d = !0;

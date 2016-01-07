@@ -1134,6 +1134,16 @@ function CGfxButton(a, b, c) {
         (这两个我不太确定啊 太迷了)
         y is the array of x coordinates of balls (y[1] is the x coordinates of the 1st ball; initialised to -1 if the ball is removed)
         D is the array of y coordinates of balls (similar to y)
+
+        methods to update:
+        1. _createMatBalls
+        2. _chooseBall
+        3. _removeBalls
+        4. _checkIsland
+        5. _markIsland
+        6. _recursiveIsland
+        7. _checkBallsWithSameColor
+        8. TBU
 */
 function CGame(a) {
     var b = !1,
@@ -1429,7 +1439,9 @@ function CGame(a) {
      */
     this._verifyVictory = function() {
         for (var a = !0, b = 0; b < BOARD_ROWS; b++) {
-            for (var c = 0; c < BOARD_COLS; c++) 1 < m[b][c] && m[b][c] < CODE_EXPLODING_BALL && (a = !1);
+            for (var c = 0; c < BOARD_COLS; c++) {
+                1 < m[b][c] && m[b][c] < CODE_EXPLODING_BALL && (a = !1);
+            }
         }
         return a
     };

@@ -1146,35 +1146,35 @@ function CGfxButton(a, b, c) {
         8. TBU
 */
 function CGame(a) {
-    var b = !1,
-    c, e, f, d, g, l, k, h, n, s, E, w, p, C, P, u, A, x, J, G, K, y, D, q, I = [],
-    m,
-    t,
+    var ballExplosionSS = !1,
+    c, e, rowBallsCoors, d, g, l, k, h, n, s, E, ballWidth, p, C, P, u, A, x, J, G, K, y, D, allRowsBallsCoors, I = [],
+    colorArray,
+    matballArray,
     B,
     F,
     z,
     N,
-    O,
-    L,
+    container,
+    diffBallSS,
     r,
     M,
-    Q,
+    bgImage,
     v,
     H;
     
     this._init = function() {
         // game background image
-        Q = new createjs.Bitmap(s_oSpriteLibrary.getSprite("bg_game"));
-        s_oStage.addChild(Q);
+        bgImage = new createjs.Bitmap(s_oSpriteLibrary.getSprite("bg_game"));
+        s_oStage.addChild(bgImage);
         // balls image
         var a = s_oSpriteLibrary.getSprite("balls");
         // w is the width of every ball img
-        w = Math.floor(a.width / NUM_BALL_COLORS);
+        ballWidth = Math.floor(a.width / NUM_BALL_COLORS);
         // spritesheet for balls of different colors
-        L = new createjs.SpriteSheet({
+        diffBallSS = new createjs.SpriteSheet({
                                     images: [a],
                                     frames: {
-                                        width: w,
+                                        width: ballWidth,
                                         height: a.height,
                                         regX: 0,
                                         regY: 0
@@ -1193,14 +1193,14 @@ function CGame(a) {
                                     }
                                     });
         this._initLevel(a);
-        v = new CInterface(L);
+        v = new CInterface(diffBallSS);
         //谜一样的G
         v.setNextBall(G - 1);
         new CHelpPanel(s_oSpriteLibrary.getSprite("bg_help"))
     };
     
     this.unload = function() {
-        b = !1;
+        ballExplosionSS = !1;
         v.unload();
         H && H.unload();
         s_oStage.removeAllChildren()
@@ -1208,33 +1208,33 @@ function CGame(a) {
     
     this._initLevel = function(a) {
         k = l = 0;
-        p = w / 2;
-        var b = w - 5;
-        BOARD_OFFSET_X = (CANVAS_WIDTH - w * BOARD_COLS) / 2;
-        var c = w / 2;
+        p = ballWidth / 2;
+        var b = ballWidth - 5;
+        BOARD_OFFSET_X = (CANVAS_WIDTH - ballWidth * BOARD_COLS) / 2;
+        var c = ballWidth / 2;
         B = new CVector2;
         F = new CVector2;
         z = new CVector2;
         N = new CVector2;
-        P = w * BOARD_COLS + BOARD_OFFSET_X;
+        P = ballWidth * BOARD_COLS + BOARD_OFFSET_X;
         var d, e;
-        q = [];
+        allRowsBallsCoors = [];
         // push coordinates of balls from a single row to f, push arrays of coordinates of balls from every row to q (我语死早了自行感受一下)
         for (var h = 0; h < BOARD_ROWS; h++) {
             for (var f = [], g = 0; g < BOARD_COLS; g++) d = BOARD_OFFSET_Y + h * b,
-                e = BOARD_OFFSET_X + g * w,
+                e = BOARD_OFFSET_X + g * ballWidth,
                 h & 1 && (e += c),
                 f.push({
                        x: e,
                        y: d
                        });
-            q.push(f)
+            allRowsBallsCoors.push(f)
         }
         OFFSET_Y_GAME_OVER = d;
         // set position of the ball to be shot
         d = BOARD_OFFSET_Y + (BOARD_ROWS + 1) * b;
         B.set(CANVAS_WIDTH / 2, d);
-        r = new createjs.Sprite(L, "ball_0");
+        r = new createjs.Sprite(diffBallSS, "ball_0");
         r.stop();
         r.x = B.getX();
         r.y = B.getY();
@@ -1242,7 +1242,7 @@ function CGame(a) {
         r.regX = Math.floor(a.width / NUM_BALL_COLORS / 2);
         r.regY = a.height / 2;
         s_oStage.addChild(r);
-        this._createMatBalls(L);
+        this._createMatBalls(diffBallSS);
         this.resetLevel()
     };
     
@@ -1257,7 +1257,7 @@ function CGame(a) {
         C = u = E = 0;
         N.set(1, 0);
         z.set(0, -1);
-        f = d = !1;
+        rowBallsCoors = d = !1;
         A = 0;
         x = s_oSpriteLibrary.getSprite("wall_tile").height;
         y = Array(MAX_BALL_ADJACENCY);
@@ -1272,7 +1272,7 @@ function CGame(a) {
         this._chooseBall();
         I = [];
         v && v.refreshLevelText(k + 1);
-        b = !0
+        ballExplosionSS = !0
     };
     
     /*
@@ -1280,11 +1280,11 @@ function CGame(a) {
         Also, it stores all the valid positions in array m.
     */
     this._createMatBalls = function(a) {
-        m = Array(BOARD_ROWS);
-        t = Array(BOARD_ROWS);
+        colorArray = Array(BOARD_ROWS);
+        matballArray = Array(BOARD_ROWS);
         for (var b = 0; b < BOARD_ROWS; b++) {
-            m[b] = Array(BOARD_COLS),
-            t[b] = Array(BOARD_COLS);
+            colorArray[b] = Array(BOARD_COLS),
+            matballArray[b] = Array(BOARD_COLS);
         }
         M = new createjs.Container;
         s_oStage.addChild(M);
@@ -1303,17 +1303,17 @@ function CGame(a) {
             }
         };
         b = new createjs.SpriteSheet(b);
-        O = new createjs.Container;
+        container = new createjs.Container;
         for (var c = 0; c < BOARD_ROWS; c++) {
             for (var d = 0; d < BOARD_COLS; d++) {
                 if (! (c & 1 && d === BOARD_COLS - 1)) {
-                    m[c][d] = 1;
-                    var e = new CBall(q[c][d].x, q[c][d].y, 1, a, b, O);
-                    t[c][d] = e
+                    colorArray[c][d] = 1;
+                    var e = new CBall(allRowsBallsCoors[c][d].x, allRowsBallsCoors[c][d].y, 1, a, b, container);
+                    matballArray[c][d] = e
                 }
             }
         }
-        s_oStage.addChild(O)
+        s_oStage.addChild(container)
     };
     
     /*
@@ -1337,10 +1337,10 @@ function CGame(a) {
         a = K[k];
         for (var b = a.split("a"), c = 0; c < BOARD_ROWS; c++) {
             for (var d = 0; d < BOARD_COLS; d++) {
-                void 0 !== t[c][d] && (
+                void 0 !== matballArray[c][d] && (
                     a.charAt(c * BOARD_COLS + d), 
-                    m[c][d] = Number(b[c * BOARD_COLS + d]), 
-                    t[c][d].setInfo(Number(b[c * BOARD_COLS + d]))
+                    colorArray[c][d] = Number(b[c * BOARD_COLS + d]),
+                    matballArray[c][d].setInfo(Number(b[c * BOARD_COLS + d]))
                 )
             }
         }
@@ -1355,8 +1355,8 @@ function CGame(a) {
         for (var a = [], b = 0; b < BOARD_ROWS; b++)
             for (var c = 0; c < BOARD_COLS; c++) {
                 for (var d = !1, e = 0; e < a.length; e++)
-                    m[b][c] === a[e] && (d = !0);
-                ! 1 === d && 1 !== m[b][c] && a.push(m[b][c])
+                    colorArray[b][c] === a[e] && (d = !0);
+                ! 1 === d && 1 !== colorArray[b][c] && a.push(colorArray[b][c])
             }
         // generates a random color from those that exist on the wall
         for (b = 0;;) {
@@ -1379,7 +1379,7 @@ function CGame(a) {
      This method plays game over sound and pops game over msg box
      */
     this._gameOver = function() {
-        b = !1; 
+        ballExplosionSS = !1;
         ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || createjs.Sound.play("game_over");
         H = CEndPanel(s_oSpriteLibrary.getSprite("msg_box"));
         H.show(l, !1)
@@ -1389,7 +1389,7 @@ function CGame(a) {
      This method pops win msg box
      */
     this._win = function() {
-        b = !1;
+        ballExplosionSS = !1;
         H = CEndPanel(s_oSpriteLibrary.getSprite("msg_box"));
         H.show(l, !0)
     };
@@ -1407,7 +1407,7 @@ function CGame(a) {
      
      */
     this.onStartGame = function() {
-        b = !0
+        ballExplosionSS = !0
     };
     
     /*
@@ -1440,7 +1440,7 @@ function CGame(a) {
     this._verifyVictory = function() {
         for (var a = !0, b = 0; b < BOARD_ROWS; b++) {
             for (var c = 0; c < BOARD_COLS; c++) {
-                1 < m[b][c] && m[b][c] < CODE_EXPLODING_BALL && (a = !1);
+                1 < colorArray[b][c] && colorArray[b][c] < CODE_EXPLODING_BALL && (a = !1);
             }
         }
         return a
@@ -1452,7 +1452,7 @@ function CGame(a) {
     this._verifyGameOver = function() {
         for (var a = !1, b = 0; b < BOARD_ROWS; b++) {
             for (var c = 0; c < BOARD_COLS; c++) {
-                if (1 < m[b][c] && m[b][c] < CODE_EXPLODING_BALL && t[b][c].getY() >= OFFSET_Y_GAME_OVER - u) {
+                if (1 < colorArray[b][c] && colorArray[b][c] < CODE_EXPLODING_BALL && matballArray[b][c].getY() >= OFFSET_Y_GAME_OVER - u) {
                     a = !0;
                     break
                 }
@@ -1475,7 +1475,7 @@ function CGame(a) {
         }
         if (c) {
             for (a = 0; a < MAX_BALL_ADJACENCY; ) {
-                - 1 !== y[a] && (m[y[a]][D[a]] = CODE_EXPLODING_BALL, t[y[a]][D[a]].destroy(), f = !0), a++;
+                - 1 !== y[a] && (colorArray[y[a]][D[a]] = CODE_EXPLODING_BALL, matballArray[y[a]][D[a]].destroy(), rowBallsCoors = !0), a++;
             }
             for (a = 0; a < MAX_BALL_ADJACENCY; a++) {
                 y[a] = D[a] = -1;
@@ -1505,13 +1505,13 @@ function CGame(a) {
     this._markIsland = function(a) {
         for (var b = 0, c = 0, b = 0; b < BOARD_ROWS; b++) {
             for (c = 0; c < BOARD_COLS; c++) {
-                0 === a[b][c] && 1 < m[b][c] && m[b][c] < CODE_EXPLODING_BALL && (m[b][c] = CODE_EXPLODING_ISLE)
+                0 === a[b][c] && 1 < colorArray[b][c] && colorArray[b][c] < CODE_EXPLODING_BALL && (colorArray[b][c] = CODE_EXPLODING_ISLE)
             }
         }
     };
     this._recursiveIsland = function(a, b, c) {
         //TBU WTH
-        0 < c[a][b] || 1 === m[a][b] || m[a][b] === CODE_EXPLODING_BALL || (c[a][b] = 1, 0 === (a & 1) ? (b + 1 < BOARD_COLS && this._recursiveIsland(a, b + 1, c), -1 < b - 1 && this._recursiveIsland(a, b - 1, c), -1 < a - 1 && -1 < b - 1 && this._recursiveIsland(a - 1, b - 1, c), -1 < a - 1 && this._recursiveIsland(a - 1, b, c), a + 1 < BOARD_ROWS && -1 < b - 1 && this._recursiveIsland(a + 1, b - 1, c)) : (b + 1 < BOARD_COLS && this._recursiveIsland(a, b + 1, c), -1 < b - 1 && this._recursiveIsland(a, b - 1, c), -1 < a - 1 && b + 1 < BOARD_COLS && this._recursiveIsland(a - 1, b + 1, c), -1 < a - 1 && this._recursiveIsland(a - 1, b, c), a + 1 < BOARD_ROWS && b + 1 < BOARD_COLS && this._recursiveIsland(a + 1, b + 1, c)), a + 1 < BOARD_ROWS && this._recursiveIsland(a + 1, b, c))
+        0 < c[a][b] || 1 === colorArray[a][b] || colorArray[a][b] === CODE_EXPLODING_BALL || (c[a][b] = 1, 0 === (a & 1) ? (b + 1 < BOARD_COLS && this._recursiveIsland(a, b + 1, c), -1 < b - 1 && this._recursiveIsland(a, b - 1, c), -1 < a - 1 && -1 < b - 1 && this._recursiveIsland(a - 1, b - 1, c), -1 < a - 1 && this._recursiveIsland(a - 1, b, c), a + 1 < BOARD_ROWS && -1 < b - 1 && this._recursiveIsland(a + 1, b - 1, c)) : (b + 1 < BOARD_COLS && this._recursiveIsland(a, b + 1, c), -1 < b - 1 && this._recursiveIsland(a, b - 1, c), -1 < a - 1 && b + 1 < BOARD_COLS && this._recursiveIsland(a - 1, b + 1, c), -1 < a - 1 && this._recursiveIsland(a - 1, b, c), a + 1 < BOARD_ROWS && b + 1 < BOARD_COLS && this._recursiveIsland(a + 1, b + 1, c)), a + 1 < BOARD_ROWS && this._recursiveIsland(a + 1, b, c))
     };
     /*
         This method checks if balls at position (a,b) is of color c
@@ -1524,7 +1524,7 @@ function CGame(a) {
             }
             e++
         }
-        if (!d && m[a][b] === c) {
+        if (!d && colorArray[a][b] === c) {
             e = 0;
             for (d = !1; e < MAX_BALL_ADJACENCY;) {
                 if ( - 1 === y[e] ) {
@@ -1542,8 +1542,8 @@ function CGame(a) {
         This method attachs the newly fired ball to the others
     */
     this._attachBall = function(a, b) {
-        m[a][b] = J;
-        t[a][b].setColor(J);
+        colorArray[a][b] = J;
+        matballArray[a][b].setColor(J);
         this._checkBallsWithSameColor(a, b, J);
         this._removeBalls()
     };
@@ -1552,47 +1552,47 @@ function CGame(a) {
     */
     this._checkIfBallHooked = function() {
         var a = new createjs.Rectangle,
-        b = w * w,
+        b = ballWidth * ballWidth,
         c = new CVector2,
         d = new CVector2,
         e = new CVector2,
         h = new CVector2;
-        a.height = a.width = w;
+        a.height = a.width = ballWidth;
         for (var f = BOARD_ROWS - 1; - 1 < f; f--) {
             for (var g = 0; g < BOARD_COLS; g++) {
-                if (! (f & 1 && g === BOARD_COLS - 1) && (a.x = q[f][g].x, a.y = q[f][g].y + u, !0 === pointInRect(F, a) && 1 === m[f][g])) {
+                if (! (f & 1 && g === BOARD_COLS - 1) && (a.x = allRowsBallsCoors[f][g].x, a.y = allRowsBallsCoors[f][g].y + u, !0 === pointInRect(F, a) && 1 === colorArray[f][g])) {
                     if (0 === f) {
                         return this._attachBall(f, g), !0;
                     }
 
                     var k = [];
-                    0 < g && (c.set(q[f][g - 1].x + p, q[f][g - 1].y + p + u), k.push({
+                    0 < g && (c.set(allRowsBallsCoors[f][g - 1].x + p, allRowsBallsCoors[f][g - 1].y + p + u), k.push({
                                                                                           v: c,
                                                                                           r: f,
                                                                                           c: g - 1
                                                                                       }));
-                    g < BOARD_COLS - 1 && (d.set(q[f][g + 1].x + p, q[f][g + 1].y + p + u), k.push({
+                    g < BOARD_COLS - 1 && (d.set(allRowsBallsCoors[f][g + 1].x + p, allRowsBallsCoors[f][g + 1].y + p + u), k.push({
                                                                                                        v: d,
                                                                                                        r: f,
                                                                                                        c: g + 1
                                                                                                    }));
-                    e.set(q[f - 1][g].x + p, q[f - 1][g].y + p + u);
+                    e.set(allRowsBallsCoors[f - 1][g].x + p, allRowsBallsCoors[f - 1][g].y + p + u);
                     k.push({
                                v: e,
                                r: f - 1,
                                c: g
                            });
-                    0 === f % 2 && 0 < g ? (h.set(q[f - 1][g - 1].x + p, q[f - 1][g - 1].y + p + u), k.push({
+                    0 === f % 2 && 0 < g ? (h.set(allRowsBallsCoors[f - 1][g - 1].x + p, allRowsBallsCoors[f - 1][g - 1].y + p + u), k.push({
                                                                                                                 v: h,
                                                                                                                 r: f - 1,
                                                                                                                 c: g - 1
-                                                                                                            })) : 0 !== f % 2 && g < BOARD_COLS - 1 && (h.set(q[f - 1][g + 1].x + p, q[f - 1][g + 1].y + p + u), k.push({
+                                                                                                            })) : 0 !== f % 2 && g < BOARD_COLS - 1 && (h.set(allRowsBallsCoors[f - 1][g + 1].x + p, allRowsBallsCoors[f - 1][g + 1].y + p + u), k.push({
                                                                                                                                                                                                                             v: h,
                                                                                                                                                                                                                             r: f - 1,
                                                                                                                                                                                                                             c: g + 1
                                                                                                                                                                                                                         }));
                     for (var l = 0; l < k.length; l++) {
-                        if (distance2(F, k[l].v) < b - 36 && 1 < m[k[l].r][k[l].c]) {
+                        if (distance2(F, k[l].v) < b - 36 && 1 < colorArray[k[l].r][k[l].c]) {
                             return this._attachBall(f, g), !0;
                         }
                     }
@@ -1608,13 +1608,13 @@ function CGame(a) {
     this._removeExplodedBalls = function() {
         for (var a = 0, d = 0; d < BOARD_ROWS; d++) {
             for (var e = 0; e < BOARD_COLS; e++) {
-                m[d][e] === CODE_EXPLODING_BALL ? (m[d][e] = 1, t[d][e].destroy(), a += (s - 1) * SCORE_EXPLOSION_BALL) : m[d][e] === CODE_EXPLODING_ISLE ? (m[d][e] = 1, t[d][e].destroy(), a += SCORE_FALLEN_BALL) : m[d][e] === CODE_EXPLODING_BOMB && (m[d][e] = 1, t[d][e].destroy()); ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || createjs.Sound.play("explosion");
+                colorArray[d][e] === CODE_EXPLODING_BALL ? (colorArray[d][e] = 1, matballArray[d][e].destroy(), a += (s - 1) * SCORE_EXPLOSION_BALL) : colorArray[d][e] === CODE_EXPLODING_ISLE ? (colorArray[d][e] = 1, matballArray[d][e].destroy(), a += SCORE_FALLEN_BALL) : colorArray[d][e] === CODE_EXPLODING_BOMB && (colorArray[d][e] = 1, matballArray[d][e].destroy()); ! 1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || createjs.Sound.play("explosion");
             }
         }
         0 < a && (l += a, 400 < a ? v.showCongrats(TEXT_INCREDIBLE) : 300 < a ? v.showCongrats(TEXT_EXCELLENT) : 200 < a ? v.showCongrats(TEXT_VERYGOOD) : 100 < a && v.showCongrats(TEXT_GOOD));
         v.refreshScore(l);
         if (c = this._verifyVictory()) {
-            b = !1,
+            ballExplosionSS = !1,
             k++,
             k < NUM_LEVELS ? (!1 !== DISABLE_SOUND_MOBILE && !1 !== s_bMobile || createjs.Sound.play("win"), v.showNextLevel(k, l)) : this._win()
         }
@@ -1625,7 +1625,7 @@ function CGame(a) {
     this._setEarthquake = function(a) {
         for (var b = EARTHQUAKE_TIME - 50 * a, c = 0; c < BOARD_ROWS; c++) {
             for (var d = 0; d < BOARD_COLS; d++) {
-                1 < m[c][d] && m[c][d] < CODE_EXPLODING_BALL && (t[c][d].stopTremble(), 0 < a && t[c][d].tremble(5, b))
+                1 < colorArray[c][d] && colorArray[c][d] < CODE_EXPLODING_BALL && (matballArray[c][d].stopTremble(), 0 < a && matballArray[c][d].tremble(5, b))
             }
         }
     };
@@ -1635,7 +1635,7 @@ function CGame(a) {
     this._updateWallPosition = function() {
         for (var a = s_oSpriteLibrary.getSprite("wall_tile"), b = 0; b < BOARD_COLS; b++) {
             var c = new createjs.Bitmap(a);
-            c.x = b * w + BOARD_OFFSET_X;
+            c.x = b * ballWidth + BOARD_OFFSET_X;
             c.y = BOARD_OFFSET_Y + u - x;
             M.addChild(c);
             I.push(c)
@@ -1675,7 +1675,7 @@ function CGame(a) {
     this._updateMatPosition = function() {
         for (var a = 0; a < BOARD_ROWS; a++) {
             for (var b = 0; b < BOARD_COLS; b++) {
-                a & 1 && b === BOARD_COLS - 1 || t[a][b].increaseY(x)
+                a & 1 && b === BOARD_COLS - 1 || matballArray[a][b].increaseY(x)
             }
         }
     };
@@ -1683,8 +1683,8 @@ function CGame(a) {
         This method is the main update method calling all the helper methods
     */
     this.update = function() { 
-        ! 1 !== b && 
-        (!1 === f ? this._updateMatch() : 50 > C ? C += s_iTimeElaps: (C = 0, f = !1, this._removeExplodedBalls()))
+        ! 1 !== ballExplosionSS &&
+        (!1 === rowBallsCoors ? this._updateMatch() : 50 > C ? C += s_iTimeElaps: (C = 0, rowBallsCoors = !1, this._removeExplodedBalls()))
     };
     s_oGame = this;
     BOARD_OFFSET_Y = a.board_y;
